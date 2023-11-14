@@ -1,0 +1,29 @@
+{
+  "name": "2048",
+  "version": "1.0.0",
+  "description": "There are two branches, the \"build\" and the \"deploy\" branch.",
+  "main": "static/js/dist/index.js",
+  "scripts": {
+    "build_wp": "webpack --config webpack.config.js",
+    "watch_wp": "webpack --config webpack.config.js --watch",
+    "build_tw": "tailwindcss -i ./tw/input.css -o ./static/css/dist/output.css --minify",
+    "watch_tw": "tailwindcss -i ./tw/input.css -o ./static/css/dist/output.css --watch",
+    "build": "npm run build_wp && npm run build_tw"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Samuel-Risner/2048.git"
+  },
+  "author": "Samuel Risner",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Samuel-Risner/2048/issues"
+  },
+  "homepage": "https://github.com/Samuel-Risner/2048#readme",
+  "dependencies": {
+    "ts-loader": "^9.4.4",
+    "typescript": "^5.1.6",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  }
+}
