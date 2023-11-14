@@ -1,0 +1,11 @@
+exclude:
+  - src/
+  - .gitignore
+  - LICENSE
+  - main.py
+  - package-lock.json
+  - package.json
+  - README.md
+  - requirements.txt
+  - tsconfig.json
+  - webpack.config.json
