@@ -5,7 +5,20 @@ import Tile from "./tile";
 const root = document.getElementById("root") as HTMLDivElement;
 
 function setRootStyleSize() {
-    root.style.transform = `scale(${Math.min(window.innerWidth, window.innerHeight) / (settings.field.size * settings.style.widthPerUnitPx)})`;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    if (w > h) {
+        const scale = h / (settings.field.size * settings.style.widthPerUnitPx);
+        root.style.transform = `scale(${scale})`;
+        root.style.left = `${(w - settings.field.size * settings.style.widthPerUnitPx * scale) / 2 }px`;
+        root.style.top = "0px";
+    } else {
+        const scale = w / (settings.field.size * settings.style.widthPerUnitPx);
+        root.style.transform = `scale(${scale})`;
+        root.style.left = "0px";
+        root.style.top = `${(h - settings.field.size * settings.style.widthPerUnitPx * scale) / 2 }px`;
+    }
 }
 
 window.onload = () => {
