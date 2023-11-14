@@ -156,6 +156,47 @@ document.addEventListener("keydown", (e: KeyboardEvent) => {
     }
 });
 
+let xTouchStart = 0;
+let yTouchStart = 0;
+
+root.ontouchstart = (e: TouchEvent) => {
+    e.preventDefault();
+
+    xTouchStart = e.touches[0].clientX;
+    yTouchStart = e.touches[0].clientY;
+}
+
+root.ontouchmove = (e: TouchEvent) => {
+    e.preventDefault();
+}
+
+root.ontouchend = (e: TouchEvent) => {
+    e.preventDefault();
+
+    if (movementLock) return;
+    movementLock = true;
+
+    const xTouchEnd = e.changedTouches[0].clientX;
+    const yTouchEnd = e.changedTouches[0].clientY;
+
+    const xDistance = Math.abs(xTouchStart - xTouchEnd);
+    const yDistance = Math.abs(yTouchStart - yTouchEnd);
+
+    if (xDistance < yDistance) {
+        if (yTouchStart > yTouchEnd) {
+            calculate(loopColsTop(tiles));
+        } else {
+            calculate(loopColsBottom(tiles));
+        }
+    } else {
+        if (xTouchStart > xTouchEnd) {
+            calculate(loopRowsLeft(tiles));
+        } else {
+            calculate(loopRowsRight(tiles));
+        }
+    }
+}
+
 createTile();
 createTile();
 
