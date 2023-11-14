@@ -2,23 +2,22 @@ import { MyGeneratorGenerator, loopColsBottom, loopColsTop, loopRowsLeft, loopRo
 import settings from "./settings";
 import Tile from "./tile";
 
-// const canvas = document.getElementById("root") as HTMLCanvasElement;
-// const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-
-// canvas.width = settings.canvas.size;
-// canvas.height = settings.canvas.size;
-
-// function setCanvasStyleSize() {
-//     canvas.style.width = `${window.innerWidth < window.innerHeight? window.innerWidth : window.innerHeight}px`;
-// }
-
-// setCanvasStyleSize();
-// window.onresize = setCanvasStyleSize;
-
-// ctx.fillStyle = "red";
-// ctx.fillRect(0, 0, 500, 500);
-
 const root = document.getElementById("root") as HTMLDivElement;
+
+function setRootStyleSize() {
+    root.style.transform = `scale(${Math.min(window.innerWidth, window.innerHeight) / (settings.field.size * settings.style.widthPerUnitPx)})`;
+}
+
+window.onload = () => {
+    setRootStyleSize();
+    window.onresize = setRootStyleSize;
+}
+
+root.style.width = `${settings.field.size * settings.style.widthPerUnitPx}px`;
+root.style.height = `${settings.field.size * settings.style.widthPerUnitPx}px`;
+root.style.position = "relative";
+root.style.transformOrigin = "0% 0% 0px";
+
 let movementLock: boolean = false;
 
 /**
@@ -35,6 +34,7 @@ for (let y = 0; y < 4; y++) {
 function createTile(): boolean {
     const freeSpaces: [number, number][] = [];
     for (let y = 0; y < tiles.length; y++) for (let x = 0; x < tiles[y].length; x++) if (tiles[y][x] === null) freeSpaces.push([x, y]);
+    
     if (freeSpaces.length === 0) return false;
 
     const [x, y] = freeSpaces[Math.floor(Math.random() * freeSpaces.length)];
@@ -44,12 +44,8 @@ function createTile(): boolean {
 }
 
 function resetMerged() {
-    for (const i of tiles) for (const j of i) if (j !== null) j.setHasMerged(false);
-    for (const i of tiles) for (const j of i) if (j !== null) console.log(j.getHasMerged());
+    for (const row of tiles) for (const tile of row) if (tile !== null) tile.setHasMerged(false);
 }
-
-createTile();
-createTile();
 
 function calculate(genGen: MyGeneratorGenerator) {
     for (const tileGen of genGen) {
@@ -146,3 +142,8 @@ document.addEventListener("keydown", (e: KeyboardEvent) => {
             return;
     }
 });
+
+createTile();
+createTile();
+
+root.hidden = false;
