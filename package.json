@@ -1,8 +1,6 @@
 {
   "name": "2048",
-  "version": "1.0.0",
-  "description": "There are two branches, the \"build\" and the \"deploy\" branch.",
-  "main": "static/js/dist/index.js",
+  "main": "static/js/dist/minified.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "watch": "webpack --config webpack.config.js --watch"
