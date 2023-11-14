@@ -1,6 +1,6 @@
 export default {
     animation: {
-        durationMS: 2000
+        durationMS: 750
     },
     field: {
         size: 4
