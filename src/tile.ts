@@ -45,7 +45,7 @@ export default class Tile {
         setStyle(this.positionElement, "red", x, y);
         setStyleInitialColorElement(this.colorElement);
         setStyleInitialTextElement(this.textElement);
-        this.setValue(2);
+        this.setValue(Math.random() < 0.5 ? 2 : 4);
 
         root.appendChild(this.positionElement);
         this.positionElement.appendChild(this.colorElement);
