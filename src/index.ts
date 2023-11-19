@@ -1,4 +1,5 @@
 import { MyGeneratorGenerator, loopColsBottom, loopColsTop, loopRowsLeft, loopRowsRight } from "./generators";
+import { getScoreText, increaseScore, loadHighScore, setScore } from "./score";
 import settings from "./settings";
 import Tile from "./tile";
 
@@ -24,6 +25,7 @@ function setRootStyleSize() {
 window.onload = () => {
     setRootStyleSize();
     window.onresize = setRootStyleSize;
+    loadHighScore();
 }
 
 root.style.width = `${settings.field.size * settings.style.widthPerUnitPx}px`;
@@ -106,6 +108,7 @@ function calculate(genGen: MyGeneratorGenerator): boolean {
                             tile.setHasMerged(true);
                             lastValueTile.setHasMerged(true);
                             tilesWereMoved = true;
+                            increaseScore(v*2);
                             continue;
                         }
 
@@ -125,6 +128,7 @@ function calculate(genGen: MyGeneratorGenerator): boolean {
                             tile.setHasMerged(true);
                             lastValueTile.setHasMerged(true);
                             tilesWereMoved = true;
+                            increaseScore(v*2);
                             continue;
                         }
                     }
@@ -153,10 +157,10 @@ function calculate(genGen: MyGeneratorGenerator): boolean {
 }
 
 function handleDefeat() {
-    console.log(successfulMoves);
-
     if (!successfulMoves.up && !successfulMoves.down && !successfulMoves.left && !successfulMoves.right) {
-        alert("Defeat!");
+        alert("Defeat!\n" + getScoreText());
+
+        setScore(0);
 
         for (let y = 0; y < tiles.length; y++) for (let x = 0; x < tiles[y].length; x++) if (tiles[y][x] !== null) {
             (tiles[y][x] as Tile).remove();

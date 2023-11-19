@@ -7,5 +7,8 @@ export default {
     },
     style: {
         widthPerUnitPx: 100
+    },
+    localStorage: {
+        highScoreKey: "highScore"
     }
 }
