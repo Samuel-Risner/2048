@@ -60,6 +60,8 @@ function resetMerged() {
     for (const row of tiles) for (const tile of row) if (tile !== null) tile.setHasMerged(false);
 }
 
+let tilesWereMoved = false;
+
 function calculate(genGen: MyGeneratorGenerator) {
     for (const tileGen of genGen) {
         for (let _i = 0; _i < settings.field.size; _i++) {
@@ -93,12 +95,14 @@ function calculate(genGen: MyGeneratorGenerator) {
                             tiles[y][x] = null;
                             tile.setHasMerged(true);
                             lastValueTile.setHasMerged(true);
+                            tilesWereMoved = true;
                             continue;
                         }
 
                         tile.setAnimation(lastX, lastY, v, null);
                         tiles[lastY][lastX] = tile;
                         tiles[y][x] = null;
+                        tilesWereMoved = true;
                         continue;
                     // If it can merge with the next one:
                     } else {
@@ -110,6 +114,7 @@ function calculate(genGen: MyGeneratorGenerator) {
                             tiles[y][x] = null;
                             tile.setHasMerged(true);
                             lastValueTile.setHasMerged(true);
+                            tilesWereMoved = true;
                             continue;
                         }
                     }
@@ -122,11 +127,16 @@ function calculate(genGen: MyGeneratorGenerator) {
         }
     }
 
-    resetMerged();
-    setTimeout(() => {
-        createTile();
-        movementLock = false;
-    }, settings.animation.durationMS);
+    if (tilesWereMoved) {
+        resetMerged();
+        setTimeout(() => {
+            createTile();
+            movementLock = false;
+        }, settings.animation.durationMS);
+    }
+
+    movementLock = false;
+    tilesWereMoved = false;
 }
 
 document.addEventListener("keydown", (e: KeyboardEvent) => {
