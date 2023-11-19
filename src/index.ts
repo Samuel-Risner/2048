@@ -62,7 +62,17 @@ function resetMerged() {
 
 let tilesWereMoved = false;
 
-function calculate(genGen: MyGeneratorGenerator) {
+const successfulMoves = {
+    up: true,
+    down: true,
+    left: true,
+    right: true
+}
+
+/**
+ * @returns `true` if tiles were moved, otherwise `false`.
+ */
+function calculate(genGen: MyGeneratorGenerator): boolean {
     for (const tileGen of genGen) {
         for (let _i = 0; _i < settings.field.size; _i++) {
             const gen = tileGen();
@@ -129,14 +139,40 @@ function calculate(genGen: MyGeneratorGenerator) {
 
     if (tilesWereMoved) {
         resetMerged();
+        tilesWereMoved = false;
         setTimeout(() => {
             createTile();
             movementLock = false;
         }, settings.animation.durationMS);
+        return true;
     }
 
     movementLock = false;
     tilesWereMoved = false;
+    return false;
+}
+
+function handleDefeat() {
+    console.log(successfulMoves);
+
+    if (!successfulMoves.up && !successfulMoves.down && !successfulMoves.left && !successfulMoves.right) {
+        alert("Defeat!");
+
+        for (let y = 0; y < tiles.length; y++) for (let x = 0; x < tiles[y].length; x++) if (tiles[y][x] !== null) {
+            (tiles[y][x] as Tile).remove();
+            tiles[y][x] = null;
+        }
+
+        successfulMoves.up = true;
+        successfulMoves.down = true;
+        successfulMoves.left = true;
+        successfulMoves.right = true;
+
+        createTile();
+        createTile();
+
+        return;
+    }
 }
 
 document.addEventListener("keydown", (e: KeyboardEvent) => {
@@ -145,25 +181,27 @@ document.addEventListener("keydown", (e: KeyboardEvent) => {
 
     switch (e.code) {
         case "ArrowUp":
-            calculate(loopColsTop(tiles));
-            return;
+            if (!calculate(loopColsTop(tiles))) successfulMoves.up = false;
+            break;
             
         case "ArrowDown":
-            calculate(loopColsBottom(tiles));
-            return;
+            if (!calculate(loopColsBottom(tiles))) successfulMoves.down = false;
+            break;
 
         case "ArrowLeft":
-            calculate(loopRowsLeft(tiles));
-            return;
+            if (!calculate(loopRowsLeft(tiles))) successfulMoves.left = false;
+            break;
 
         case "ArrowRight":
-            calculate(loopRowsRight(tiles));
-            return;
+            if (!calculate(loopRowsRight(tiles))) successfulMoves.right = false;
+            break;
 
         default:
             movementLock = false;
             return;
     }
+
+    handleDefeat();
 });
 
 let xTouchStart = 0;
@@ -194,17 +232,19 @@ root.ontouchend = (e: TouchEvent) => {
 
     if (xDistance < yDistance) {
         if (yTouchStart > yTouchEnd) {
-            calculate(loopColsTop(tiles));
+            if (!calculate(loopColsTop(tiles))) successfulMoves.up = false;
         } else {
-            calculate(loopColsBottom(tiles));
+            if (!calculate(loopColsBottom(tiles))) successfulMoves.down = false;
         }
     } else {
         if (xTouchStart > xTouchEnd) {
-            calculate(loopRowsLeft(tiles));
+            if (!calculate(loopRowsLeft(tiles))) successfulMoves.left = false;
         } else {
-            calculate(loopRowsRight(tiles));
+            if (!calculate(loopRowsRight(tiles))) successfulMoves.right = false;
         }
     }
+
+    handleDefeat();
 }
 
 createTile();
